@@ -1,10 +1,19 @@
 {
+  "$schema": "./package.schema.json",
   "name": "@jive-sh/docs",
   "type": "module",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "scripts": {
+    "jive:cicd:get-config": "jive-app-github-pages cicd get-config",
+    "jive:cicd:build": "jive-app-github-pages cicd build",
+    "jive:cicd:audit": "jive-app-github-pages cicd audit",
+    "jive:cicd:deploy:plan": "jive-app-github-pages cicd deploy-plan",
+    "jive:cicd:upload-artifacts": "jive-app-github-pages cicd upload-artifacts",
+    "jive:cicd:deploy": "jive-app-github-pages cicd deploy",
     "dev": "astro dev",
+    "dev:schema": "jive-app-github-pages dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -16,5 +25,29 @@
     "astro-mermaid": "^2.2.0",
     "mermaid": "^12.3.0",
     "sharp": "^0.35.3"
+  },
+  "jive": {
+    "cicd": {
+      "deploy": {
+        "verb": "Deploy to",
+        "branches": {
+          "main": [
+            "Production"
+          ]
+        },
+        "previews": false,
+        "sequentially": true
+      },
+      "runsOnPullRequests": true,
+      "runsOn": "ubuntu-latest",
+      "requiredSecrets": [
+        "GITHUB_TOKEN"
+      ]
+    },
+    "app-github-pages": {
+      "buildScript": "build",
+      "outputDir": "dist",
+      "domain": "docs.jive.sh"
+    }
   }
 }

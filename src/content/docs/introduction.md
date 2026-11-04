@@ -3,10 +3,16 @@ title: Introduction
 description: What Jive is, and the ideas it is built on.
 ---
 
-Jive is a **developer platform** and an **agentic workforce platform**. Its goal is to take the manual steps out of
-building, shipping and running software, and the organizations behind it: no CI configuration to write, no packages
-or accounts to create by hand, no secrets copied between systems, and no laptop that has to stay on for work to
-continue.
+Jive is a **developer platform** and an **agentic workforce platform**. It takes the manual steps out of building,
+shipping and running software, and the infrastructure behind it. A few ideas run through all of it:
+
+- **Agents in the cloud** (planned). Agentic workflows run on cloud compute with a session Jive gives them, not on a laptop that
+  has to stay on.
+- **Composable agentic workflows** (planned). A workflow is a package built from steps, and a workforce is built from workflows.
+- **Minimal configuration.** A package extends an abstract for its kind and gets its pipeline, its config schema and
+  its scaffold from it.
+- **Composable software.** Packages declare the resources they need instead of sharing code, so independent
+  repositories work together without a monorepo.
 
 - **Developer platform:** the `jive` CLI, the CI/CD pipeline every Jive package runs, and resource provisioning,
   which makes sure every resource a package needs exists in its organization.
@@ -62,6 +68,13 @@ procedures"
 ([architecture §3.3](https://github.com/jive-sh/jive/blob/462dff763e8194b412b3c040feeaf9f854b6a3e1/docs/jive_architecture_discussion.md#33-arbitrary-durable-workflows)).
 A workforce is a set of such workflows, the agents they call, and the resource providers they act through.
 *Planned:* agentic workflows as a package kind, and workforces built from them.
+
+## Agents in the cloud
+
+An agentic workflow shouldn't stop when its author closes a laptop. Compute is a resource type like any other: Jive
+provisions it from the organization's provider, and hands the workflow running there a session of its own. That
+session is one of exactly three ways to get one, beside a person's passkey and a pipeline's GitHub identity
+([Sessions](/server/sessions/)). *Planned:* the compute resource type and Jive-minted sessions.
 
 ## A marketplace of package kinds
 

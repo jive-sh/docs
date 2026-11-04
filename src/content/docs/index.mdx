@@ -1,9 +1,10 @@
 ---
 title: Jive
-description: A developer platform and an agentic workforce platform that takes the manual steps out of building, shipping and running software.
+description: A developer's best friend, or worst enemy. Jive automates the work developers toil over, and could run a whole business.
 template: splash
 hero:
-  tagline: A developer platform and an agentic workforce platform. Jive takes the manual steps out of building, shipping and running software, and the organizations behind it.
+  title: A developer's best friend, or worst enemy
+  tagline: Jive takes the manual steps out of building, shipping and running software, and the infrastructure behind it. It is built to run agentic workflows in the cloud, so work keeps going with your laptop closed. Take it far enough and it runs an entire business, with no developers needed.
   actions:
     - text: Introduction
       link: /introduction/
@@ -17,38 +18,60 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
 
-## Two platforms
+## Best friend: what Jive takes off your plate
 
 <CardGrid>
-  <Card title="Developer platform" icon="laptop">
-    The `jive` CLI, one CI/CD pipeline every package runs without writing any YAML, and resource provisioning that
-    makes sure everything a package needs exists in its organization.
+  <Card title="No CI to write" icon="setting">
+    Extend an abstract and your package has a full pipeline: build, test, deploy. The abstract also owns the config
+    schema your editor completes, and the scaffold. <Badge text="Built" variant="success" />
   </Card>
-  <Card title="Agentic workforce platform" icon="rocket">
-    Workforces of agents and code that run an organization's work: a software factory, binary decompilation, a
-    business and its operations.
+  <Card title="Nothing to create by hand" icon="add-document">
+    Each deploy makes sure what it deploys to exists: the npm package, the repository, the DNS record. You never click
+    through a dashboard first. <Badge text="Built for npm packages" variant="success" />
+  </Card>
+  <Card title="No keys on your machine" icon="approve-check">
+    Sign in once with a passkey. Jive's server holds your SSH key and signs your commits and pushes, so no machine
+    keeps a private key. <Badge text="Built" variant="success" />
+  </Card>
+  <Card title="No secrets in CI" icon="warning">
+    A pipeline signs in with its own GitHub identity and acts through credentials Jive holds, so no long-lived tokens
+    sit in your repository settings. <Badge text="Sign-in built; tokens still stored" variant="caution" />
+  </Card>
+  <Card title="Many repos, one workspace" icon="seti:git">
+    Keep every package in its own repository and still work in one checkout, signing and pushing the same way
+    everywhere. <Badge text="Built" variant="success" />
+  </Card>
+  <Card title="Agents that don't need your laptop" icon="rocket">
+    Agentic workflows run on cloud compute with a session Jive gives them, so work keeps going while your laptop is
+    closed. <Badge text="Planned" variant="note" />
   </Card>
 </CardGrid>
 
-## Why Jive
+## Worst enemy: a business that runs itself
+
+Everything above is designed to compose. Agentic workflows are packages built from steps, and workforces are built from workflows.
+Resource providers give every one of them the same way to reach the outside world. A software factory is one
+workforce, binary decompilation another, and a business and its operations a third. Put enough of them together and
+nothing is left for a developer to do.
+
+## Built on a few ideas
 
 <CardGrid>
-  <Card title="Agentic workflows, not skills" icon="random">
-    A skill is instructions an agent may follow or forget. A workflow is a process defined in code, retried step by
-    step and measured, so what must happen is enforced rather than hoped for.
+  <Card title="Everything is a package" icon="puzzle">
+    Libraries, apps, servers, resource providers and agentic workflows are all npm packages. Even each kind of package
+    is a package, an abstract, so anyone can publish a new kind.
   </Card>
-  <Card title="A marketplace of package kinds" icon="puzzle">
-    Every kind of package is itself a package, an abstract. Extending one gives a package a working pipeline, and
-    anyone can publish a new kind.
+  <Card title="Packages compose" icon="random">
+    A package extends an abstract for how it ships, and declares the resources it needs instead of sharing code.
+    Working together doesn't require a monorepo.
   </Card>
-  <Card title="No monorepo needed" icon="seti:git">
-    Each package keeps its own repository, version and pipeline. Jive supplies what a monorepo would: one checkout,
-    one way to ship, and shared resources instead of shared code.
+  <Card title="Workflows, not prompts" icon="list-format">
+    An agentic workflow is code: each step is deterministic or one bounded agent call, retried on failure and measured.
+    What must happen is enforced, not hoped for.
   </Card>
-  <Card title="Credentials stay with Jive" icon="approve-check">
-    Jive's server holds every credential and signs every commit. A person, a pipeline or an agent holds only a
-    session.
+  <Card title="Jive holds the credentials" icon="star">
+    People, pipelines and agents hold only a session. Every key and token stays with Jive, behind one API.
   </Card>
 </CardGrid>
