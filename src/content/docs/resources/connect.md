@@ -1,6 +1,6 @@
 ---
 title: Connecting an account
-description: How a credential gets from an outside system to Jive, with one person's consent.
+description: How a credential gets from an outside system to Jive.
 ---
 
 Before Jive can act on an outside system, an organization connects an account on it once. The person does only what

@@ -3,9 +3,10 @@ title: Introduction
 description: What Jive is, and the ideas it is built on.
 ---
 
-Jive is a **developer platform** and an **agentic workforce platform**. Its purpose is to remove every human step from
-building and running software and organizations except one: **consent**, a person saying yes to something done on
-their behalf. Jive brings the request to the person, takes the yes (a passkey tap), and does everything else.
+Jive is a **developer platform** and an **agentic workforce platform**. Its goal is to take the manual steps out of
+building, shipping and running software, and the organizations behind it: no CI configuration to write, no packages
+or accounts to create by hand, no secrets copied between systems, and no laptop that has to stay on for work to
+continue.
 
 - **Developer platform:** the `jive` CLI, the CI/CD pipeline every Jive package runs, and resource provisioning,
   which makes sure every resource a package needs exists in its organization.
@@ -16,6 +17,37 @@ their behalf. Jive brings the request to the person, takes the yes (a passkey ta
   <source media="(prefers-color-scheme: dark)" srcset="/jive-platforms-dark.svg" />
   <img alt="Agentic workforce, the outer circle, holding three separate circles: software factory, binary decompilation, and a business and its operations" src="/jive-platforms-light.svg" width="480" />
 </picture>
+
+## A first look
+
+A package gets its whole pipeline by extending an abstract. Here an npm library extends `jive-abstract-library`: its
+six CI/CD scripts call the abstract's CLI, and its `jive` block says where it deploys.
+
+```json
+{
+  "name": "@my-scope/my-library",
+  "scripts": {
+    "jive:cicd:get-config": "jive-library cicd get-config",
+    "jive:cicd:build": "jive-library cicd build",
+    "jive:cicd:audit": "tsc --noEmit -p tsconfig.json && bun test",
+    "jive:cicd:deploy:plan": "jive-library cicd deploy-plan",
+    "jive:cicd:upload-artifacts": "jive-library cicd upload-artifacts",
+    "jive:cicd:deploy": "jive-library cicd deploy"
+  },
+  "jive": {
+    "cicd": {
+      "deploy": { "verb": "Publish", "branches": { "main": ["latest"] }, "previews": false, "sequentially": true },
+      "runsOnPullRequests": true,
+      "runsOn": "ubuntu-latest"
+    },
+    "library": { "daemons": [], "provisionWithJive": null }
+  }
+}
+```
+
+The repository's only CI file is a standard `.github/workflows/pipeline.yml` that calls Jive's shared pipeline.
+Each push to `main` builds, tests and publishes the library to npm, skipping the publish when the version is already
+there ([CI/CD hooks](/packages/cicd/)).
 
 ## Agentic workflows, not skills
 
