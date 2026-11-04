@@ -1,10 +1,10 @@
 ---
-title: Jive API
+title: API reference
 description: Every contract Jive's packages, CLI, daemon, extension and server agree on.
 ---
 
-Jive's API is more than the server's functions. It is every contract a package author, a pipeline, a person's machine
-or the server relies on:
+This reference covers every contract a package author, a pipeline, a person's machine or the Jive server relies on,
+not only the server's functions.
 
 | Part | Page |
 | --- | --- |

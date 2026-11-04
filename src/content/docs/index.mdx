@@ -1,0 +1,54 @@
+---
+title: Jive
+description: A developer platform and an agentic workforce platform that removes every human step but consent.
+template: splash
+hero:
+  tagline: Jive removes every human step from building and running software and organizations, except one, consent. It brings the request to you, takes your yes with a passkey tap, and does everything else.
+  actions:
+    - text: Introduction
+      link: /introduction/
+      icon: right-arrow
+    - text: API reference
+      link: /reference/
+      variant: minimal
+    - text: GitHub
+      link: https://github.com/jive-sh
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Two platforms
+
+<CardGrid>
+  <Card title="Developer platform" icon="laptop">
+    The `jive` CLI, one CI/CD pipeline every package runs without writing any YAML, and resource provisioning that
+    makes sure everything a package needs exists in its organization.
+  </Card>
+  <Card title="Agentic workforce platform" icon="rocket">
+    Workforces of agents and code that run an organization's work: a software factory, binary decompilation, a
+    business and its operations.
+  </Card>
+</CardGrid>
+
+## Why Jive
+
+<CardGrid>
+  <Card title="Agentic workflows, not skills" icon="random">
+    A skill is instructions an agent may follow or forget. A workflow is a process defined in code, retried step by
+    step and measured, so what must happen is enforced rather than hoped for.
+  </Card>
+  <Card title="A marketplace of package kinds" icon="puzzle">
+    Every kind of package is itself a package, an abstract. Extending one gives a package a working pipeline, and
+    anyone can publish a new kind.
+  </Card>
+  <Card title="No monorepo needed" icon="seti:git">
+    Each package keeps its own repository, version and pipeline. Jive supplies what a monorepo would: one checkout,
+    one way to ship, and shared resources instead of shared code.
+  </Card>
+  <Card title="Credentials stay with Jive" icon="approve-check">
+    Jive's server holds every credential and signs every commit. A person, a pipeline or an agent holds only a
+    session.
+  </Card>
+</CardGrid>

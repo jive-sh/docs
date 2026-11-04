@@ -8,10 +8,11 @@ export default defineConfig({
 	integrations: [
 		mermaid(),
 		starlight({
-			title: 'Jive API',
+			title: 'Jive',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/jive-sh' }],
 			sidebar: [
-				{ label: 'Overview', slug: '' },
+				{ label: 'Start here', items: ['introduction'] },
+				{ label: 'API reference', slug: 'reference' },
 				{
 					label: 'Packages',
 					items: ['packages/names', 'packages/abstracts', 'packages/cicd'],
