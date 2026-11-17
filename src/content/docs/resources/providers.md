@@ -65,7 +65,7 @@ type Credential = {
   refreshable", and refreshing is a separate call.
 - **Decided** (Alex, 2026-11-01): "Connectors must expose an API which allows for key rotation". The draft is
   `keys.syncPublicKeys`
-  ([jive_key_rotation_api.md](https://github.com/jive-sh/jive/blob/462dff763e8194b412b3c040feeaf9f854b6a3e1/docs/jive_key_rotation_api.md)).
+  ([jive_key_rotation_api.md](https://github.com/jive-sh/jive/blob/fc7ac076f46e489f4028186b4ce8053e332622d9/docs/jive_key_rotation_api.md)).
 - A component stores no credentials: the server passes one on every call. **Built** that way today.
 - `EnsureResult` is today's `EnsureInstanceResult`: `ready`, `inProgress`, `personNeeded` or `refused`
   ([instance.ts](https://github.com/jive-sh/jive-abstract-resource/blob/d2429164c20ef415c2ec1e76cf0a8c68c157ad24/src/internal/public/instance.ts#L27-L38)).

@@ -49,5 +49,8 @@
       "outputDir": "dist",
       "domain": "docs.jive.sh"
     }
+  },
+  "devDependencies": {
+    "jive-abstract-app-github-pages": "^0.1.1"
   }
 }

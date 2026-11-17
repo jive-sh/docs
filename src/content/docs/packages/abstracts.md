@@ -30,7 +30,7 @@ publishes that schema as JSON Schema, so an editor completes and checks the bloc
 ```json
 "jive": {
   "cicd": { "deploy": { … }, "runsOn": "ubuntu-latest", … },
-  "library": { "daemons": ["jive-signing-agent"], "provisionWithJive": null }
+  "library": { "daemons": ["jive-daemon"], "provisionWithJive": null }
 }
 ```
 

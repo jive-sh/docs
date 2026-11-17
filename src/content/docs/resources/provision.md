@@ -23,9 +23,12 @@ jive provision package-registry package @my-scope/some-package
   `jive.resources.<provider kind>.<resource type>.<name>`. A flag per argument, generated from the resource type's
   schema, overrides them.
 
-**Built** today (jive 0.5.3): `jive provision <kind> <name>`, with the instance read from
+**Built** today (jive 0.9.0): `jive provision <kind> <name>`, with the instance read from `./package.json`'s
 `jive.resources.<kind>.<name>` or given as `--instance '<json>'`
-([program.ts](https://github.com/jive-sh/jive/blob/462dff763e8194b412b3c040feeaf9f854b6a3e1/src/program.ts#L144-L163)).
+([program.ts](https://github.com/jive-sh/jive/blob/fc7ac076f46e489f4028186b4ce8053e332622d9/src/program.ts#L149-L168)).
+It needs a pipeline session, so a deploy job runs `jive login --cicd` first. While the server answers that another
+deploy is provisioning the same instance, it asks again for up to 10 minutes
+([provisioning](https://github.com/jive-sh/jive/blob/fc7ac076f46e489f4028186b4ce8053e332622d9/src/modules/provisioning/impl.ts#L10-L39)).
 
 ## The server call
 

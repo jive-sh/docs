@@ -48,10 +48,19 @@ sequenceDiagram
 
 ## What exists today
 
-**Built, unpublished:** `@jive-sh/daemon` and `@jive-sh/extension` exist on Alex's machine as a proof of concept
-(no GitHub repository). Chrome starts `jive-native-host`, which relays the extension's messages to the daemon's socket.
-Their protocol carries an npm credential only, and the step that hands it to the server isn't decided. So steps 2 to 4
-exist for npm in prototype form, and steps 1, 5 and 6 don't exist.
+**Built:** the daemon side, in jive 0.8.0 and later. The extension's daemon is `jive-daemon`, the one daemon
+`@jive-sh/jive` installs. Chrome starts jive's `jive-native-host` command, which relays the extension's messages to the daemon's
+socket, `~/.jive/jive-daemon.sock`; at each start the daemon registers that host with Chrome and Chromium on macOS and
+Linux (not yet on Windows). The extension never holds a session: it asks the daemon, which uses the session
+`jive login` keeps, and can start a sign-in for it
+([protocol.ts](https://github.com/jive-sh/jive/blob/fc7ac076f46e489f4028186b4ce8053e332622d9/src/modules/extension-daemon/protocol.ts)).
+
+**Built, unpublished:** `@jive-sh/extension` exists on Alex's machine as a proof of concept, with no GitHub repository
+and no release.
+
+The protocol carries an npm credential only, and who accepts it on the Jive side isn't decided: until it is, the
+daemon answers the extension that it isn't ready, so the extension stops before it changes anything on npm. So steps 2
+to 4 exist for npm in prototype form, and steps 1, 5 and 6 don't exist.
 
 ## Open questions
 

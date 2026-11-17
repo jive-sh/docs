@@ -81,23 +81,28 @@ session is one of exactly three ways to get one, beside a person's passkey and a
 Everything in Jive is an npm package, and **every kind of package is itself a package**: an *abstract*,
 `jive-abstract-<kind>`, implements the six CI/CD hooks for that kind, owns the config an extending package fills in,
 and scaffolds new packages of the kind. Extending one gives a package a working pipeline with no CI configuration of
-its own. Kinds built today include `jive-abstract-library` (npm libraries and CLIs), `jive-abstract-backend-convex`
-and `jive-abstract-app-expo`. Anyone can publish an abstract, so the set of kinds grows like a marketplace
+its own. Kinds built today include `jive-abstract-library` (npm libraries and CLIs), `jive-abstract-backend-convex`,
+`jive-abstract-app-expo` and `jive-abstract-app-github-pages` (static sites served by GitHub Pages). Anyone can publish an abstract, so the set of kinds grows like a marketplace
 ([Abstracts](/packages/abstracts/)).
 
 **Resources** are the same idea for what packages use. A **resource provider** is one kind of outside system, such as
 a package registry, offering several resource types, such as packages and orgs. An implementation is a package for one
 system, such as npm. An organization configures one implementation per provider kind, and callers name only the kind:
-`jive provision package-registry package @scope/name` makes sure that package exists on whichever registry the
-organization uses ([Resource providers](/resources/providers/)).
+from a deploy job, `jive provision connector-package-registry @scope/name` makes sure that package exists on whichever
+registry the organization uses. The decided form names the provider kind and the resource type,
+`jive provision package-registry package @scope/name`, and isn't built yet
+([Resource providers](/resources/providers/)).
 
 ## No monorepo needed
 
 Jive began as a way to make independent repositories work like a monorepo. Each package keeps its own repository,
 version and pipeline, and Jive supplies what a monorepo would:
 
-- **One checkout for local work:** `jive init` makes any repository a workspace, and `jive load` adds repositories to
-  it as submodules, all signing and pushing the same way.
+- **One checkout for local work:** `jive init` marks a monorepo's root as a workspace and makes every repository in
+  it, its submodules included, sign and push the same way, and `jive load` adds repositories to it as submodules at
+  `packages/<package name>` ([Workspace layout](/cli/#workspace-layout)). The packages in it are linked to each other,
+  so each one runs its workspace dependencies from their checkouts while its own lockfile and CI stay as they are
+  ([Workspace links](/cli/#workspace-links)).
 - **One way to ship:** every repository runs the same pipeline through its abstract.
 - **Resources instead of shared code:** a package declares the resources it needs and the organization's providers
   supply them, so nothing has to live in the same repository to work together.
