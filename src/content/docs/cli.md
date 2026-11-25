@@ -21,37 +21,38 @@ scheduled task on Windows).
 | `jive login` | Opens `https://jive.sh/login?request=…`, where you sign in with your jive.sh passkey; then fetches your account's public key into `~/.jive/ssh/account.pub`, which git signing and pushes use | Built |
 | `jive login --cicd` | In a GitHub Actions job with `id-token: write`: trades the job's GitHub ID token for a session of its pipeline | Built |
 | `jive whoami` | Prints the handle of the account this machine is signed in as, as `jive-daemon` reports it; offline, the handle saved at the last check, marked not confirmed | Built |
-| `jive init` | Marks the workspace root ([Workspace layout](#workspace-layout)). Then, in that root: rewrites every `.gitmodules` URL to `https://github.com/<owner>/<repo>`, checks out every submodule, makes the root and every repository inside it sign through `jive-ssh-sign` and fetch and push over SSH through `jive-ssh`, and links the packages among them with each other ([Workspace links](#workspace-links)). Safe to run again | Built |
-| `jive load <org> <repo>` | Adds `github.com/<org>/<repo>` to the workspace as a submodule at `packages/<its package.json name>`. It clones the repo, or adopts a checkout of it already there and keeps its uncommitted work. It stages only the repo's own `.gitmodules` entry and gitlink, and commits nothing. Then it configures the repo as `jive init` does, runs `bun install` in it, and links it with the workspace's packages | Built |
-| `jive unload <org> <repo>` | Removes the workspace's links into the repository, running `bun install` in each package that had one so it gets its registry copy back, then removes the submodule | Built |
-| `jive on <org> <repo> -- <command>` | Runs a command in a loaded repository's folder; its exit code is jive's | Built |
+| `jive init` | Sets up the workspace, the nearest git repository from where it runs ([Workspace layout](#workspace-layout)); in a folder in no repository, it first makes that folder a new repository on `main`. In it: rewrites every `.gitmodules` already there, at every depth, to `https://github.com/<owner>/<repo>` (a repository with none gets none, and no other file changes), checks out every submodule, makes the root and every repository inside it sign through `jive-ssh-sign` and fetch and push over SSH through `jive-ssh`, and links the packages among them with each other ([Workspace links](#workspace-links)). It asks nothing, except a name and email for the workspace's commits when the root's git config has none. Safe to run again | Built |
+| `jive load <org> <repo>` | In a git repository, adds `github.com/<org>/<repo>` to the workspace as a submodule at `packages/<its package.json name>`, logging `Loading <org>/<repo> into <root>/packages/<package name>, in the workspace at <root>`. It clones the repo, or adopts a checkout of it already there and keeps its uncommitted work. It stages only the repo's own `.gitmodules` entry and gitlink, and commits nothing; the workspace's other `.gitmodules` URLs move to https, unstaged. Then it runs `bun install` in the repo, links it with the workspace's packages, and ends by running `jive init` in it. In a folder in no repository, it clones the repo into `./<repo>`, saying so, and runs `jive init` there. Any other words than an org and one repo print `jive load --help`, and `No access to an org named <org>` when GitHub has no account by that name | Built |
+| `jive unload <org> <repo>` | Removes the workspace's links into the repository, running `bun install` in each package that had one so it gets its registry copy back, then removes the submodule from the workspace, the nearest git repository from where it runs | Built |
+| `jive on <org> <repo> -- <command>` | Runs a command in the folder of a repository loaded in the workspace, the nearest git repository from where it runs; its exit code is jive's | Built |
 | `jive provision <kind> <name>` | Makes sure a resource exists ([Provisioning](/resources/provision/)). Needs a pipeline session from `jive login --cicd` | Built; decided as `<provider kind> <resource type> <name>` |
 | `jive daemons` | Lists every Jive daemon registered on this machine, with its state, executable and log | Built |
 | `jive upgrade` | Upgrades jive with the package manager that installed it | Built |
 | `jive connect <provider kind>` | Connects an organization's account on an outside system ([Connecting an account](/resources/connect/)) | Decided, not built; name proposed |
-| `jive create <kind> …` | Scaffolds a package extending `jive-abstract-<kind>` ([Package names](/packages/names/)) | Decided, not built; removed in 0.3.0, to return |
+| `jive create <kind words…>` | Makes a new package at `packages/<its package name>` in the workspace from the template of `jive-abstract-<kind words joined by hyphens>`, asking for each input the template names or taking it as `--<input> <value>` ([Package names](/packages/names/)). It writes files only: creating its GitHub repo and `jive load` come after | Built (0.11.0) |
 
 Every command takes `--help`; `jive --version` prints the version, and `jive --setup-completion` turns on Tab
 completion in your shell.
 
-Commands at jive 0.9.0
-([program.ts](https://github.com/jive-sh/jive/blob/fc7ac076f46e489f4028186b4ce8053e332622d9/src/program.ts#L32-L198)).
+Commands at jive 0.12.1
+([program.ts](https://github.com/jive-sh/jive/blob/d71b5ba964eeb28eacff528cd5e656499f482b39/src/program.ts#L37-L259)).
 
 ### Workspace layout
 
-A workspace is a git monorepo whose root `package.json` has `"jive": { "root": true }`. `jive init` finds the root as
-the nearest directory, from the current one upward, whose `package.json` has that mark. When there is none, the root is
-the top of the outermost git repository you are in, and `jive init` writes the mark into its `package.json`, creating
-the file if it's missing and keeping its other fields and indentation. Every other command finds the root by the mark.
-Outside a marked workspace, they stop and tell you to run `jive init`.
+A workspace is the nearest git repository from the folder a command runs in: the nearest folder, from there up, that
+holds `.git` (a repository's folder, or the file a submodule or worktree has). Any nesting level works: inside a
+submodule, the submodule is the workspace, and to work in an outer repository you `cd` there first. Nothing marks a
+workspace and there is no flag or question to pick one. `jive init`, `jive load`, `jive unload`, `jive on`, `jive create`
+and Tab completion all use this rule
+([workspace rule](https://github.com/jive-sh/jive/blob/d71b5ba964eeb28eacff528cd5e656499f482b39/src/modules/tool-state/impl.ts)).
 
 Each repository `jive load` adds is a submodule at `packages/<its package.json name>`: `@jive-sh/jive` at
 `packages/@jive-sh/jive`, `jive-abstract-library` at `packages/jive-abstract-library`. It's the only layout, and there is
 no option to put a repository elsewhere. A repository without a `package.json` naming its package can't be loaded. A
 checkout of the repository somewhere else under `packages/` is refused, with the `git mv` that moves it into place.
-`jive unload` and `jive on` find a loaded repository by its GitHub URL in the root `.gitmodules`
-([README](https://github.com/jive-sh/jive/blob/fc7ac076f46e489f4028186b4ce8053e332622d9/README.md#workspace-layout),
-[layout](https://github.com/jive-sh/jive/blob/fc7ac076f46e489f4028186b4ce8053e332622d9/src/modules/tool-state/workspace-layout.ts)).
+`jive unload` and `jive on` find a loaded repository by its GitHub URL in the workspace's `.gitmodules`
+([README](https://github.com/jive-sh/jive/blob/d71b5ba964eeb28eacff528cd5e656499f482b39/README.md#workspace-layout),
+[layout](https://github.com/jive-sh/jive/blob/d71b5ba964eeb28eacff528cd5e656499f482b39/src/modules/tool-state/workspace-layout.ts)).
 
 ### Workspace links
 

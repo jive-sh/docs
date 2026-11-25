@@ -98,8 +98,8 @@ registry the organization uses. The decided form names the provider kind and the
 Jive began as a way to make independent repositories work like a monorepo. Each package keeps its own repository,
 version and pipeline, and Jive supplies what a monorepo would:
 
-- **One checkout for local work:** `jive init` marks a monorepo's root as a workspace and makes every repository in
-  it, its submodules included, sign and push the same way, and `jive load` adds repositories to it as submodules at
+- **One checkout for local work:** `jive init` makes the git repository you are in a workspace and makes every
+  repository in it, its submodules included, sign and push the same way, and `jive load` adds repositories to it as submodules at
   `packages/<package name>` ([Workspace layout](/cli/#workspace-layout)). The packages in it are linked to each other,
   so each one runs its workspace dependencies from their checkouts while its own lockfile and CI stay as they are
   ([Workspace links](/cli/#workspace-links)).
