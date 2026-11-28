@@ -18,7 +18,7 @@ scheduled task on Windows).
 
 | Command | Does | Status |
 | --- | --- | --- |
-| `jive login` | Opens `https://jive.sh/login?request=…`, where you sign in with your jive.sh passkey; then fetches your account's public key into `~/.jive/ssh/account.pub`, which git signing and pushes use | Built |
+| `jive login` | Asks `jive-daemon` to sign this machine in ([Sessions](/server/sessions/)) and opens `https://jive.sh/login?request=…`, where you sign in with your jive.sh passkey. Programs signing in at the same time share one request; then it fetches your account's public key into `~/.jive/ssh/account.pub`, which git signing and pushes use | Built |
 | `jive login --cicd` | In a GitHub Actions job with `id-token: write`: trades the job's GitHub ID token for a session of its pipeline | Built |
 | `jive whoami` | Prints the handle of the account this machine is signed in as, as `jive-daemon` reports it; offline, the handle saved at the last check, marked not confirmed | Built |
 | `jive init` | Sets up the workspace, the nearest git repository from where it runs ([Workspace layout](#workspace-layout)); in a folder in no repository, it first makes that folder a new repository on `main`. In it: rewrites every `.gitmodules` already there, at every depth, to `https://github.com/<owner>/<repo>` (a repository with none gets none, and no other file changes), checks out every submodule, makes the root and every repository inside it sign through `jive-ssh-sign` and fetch and push over SSH through `jive-ssh`, and links the packages among them with each other ([Workspace links](#workspace-links)). It asks nothing, except a name and email for the workspace's commits when the root's git config has none. Safe to run again | Built |

@@ -17,16 +17,32 @@ them are available via cli".
 
 ## Signing a program in with a passkey
 
-**Built**
-([signInRequests.ts](https://github.com/jive-sh/server/blob/371b2dadf7ba5898fe86bb914c490075f4589bd3/convex/signInRequests.ts#L11-L26)).
-A CLI or the daemon holds no passkey, so:
+**Built** (jive 0.13, `@jive-sh/server` 0.13). On a person's machine only `jive-daemon` signs in. `jive login`, any
+`jive` command that needs a session, the Jive browser extension, and any program that runs one of them ask the daemon
+on its socket, so programs asking at the same time share one request and the person gets one prompt.
 
-1. The program calls `signInRequests:open` and keeps the claim secret it gets back.
-2. The person opens `https://jive.sh/login?request=<id>` and signs in with their passkey. There is no code to compare.
-3. The program calls `signInRequests:claim` until it answers with the program's own session token.
+1. The daemon reads which program asked from the socket's peer process and its parents. It keeps only program names
+   ([caller-chain](https://github.com/jive-sh/jive/blob/b3a76b58034bcaf158ff1ea4284ed2fd57dc1f75/src/modules/caller-chain/program-names.ts#L1-L28)), never command lines.
+2. When no request is waiting, the daemon opens one at `POST /sign-in-requests`
+   ([http.ts](https://github.com/jive-sh/server/blob/5f587db973bbda948148b03f0f11ae73dc5eb1cc/convex/http.ts#L33-L52)). The request names the machine by its key, an ECDSA P-256 key the
+   daemon created, and by the name its operating system gives it. It is signed with that key and names the programs.
+   The server records the address the request came from.
+   - When a request is already waiting, the program is added to it instead (`signInRequests:addCaller`).
+3. The person opens `https://jive.sh/login?request=<id>` and signs in with their passkey. There is no code to compare.
+   - The page shows the programs, the machine's name, whether the account trusts the machine, and the address.
+   - **Trust this machine** names the machine and marks it trusted. Trust is only a label: every sign-in still needs
+     the passkey.
+4. The daemon calls `signInRequests:claim`, signing each claim with the machine's key, until it answers with the
+   machine's own session token ([machineKeys.ts](https://github.com/jive-sh/server/blob/5f587db973bbda948148b03f0f11ae73dc5eb1cc/convex/model/machineKeys.ts#L1-L33)). Someone holding only
+   the claim secret gets nothing.
 
-**Built:** with phone approval enabled, step 2 can happen on the person's phone instead. The request is pushed to
-the Jive app, and approving it there with the passkey grants the program its session
+The machine's key lives in `~/.jive/machine-key.json`, readable by its owner only. *Planned:* the Secure Enclave on a
+Mac and a TPM elsewhere, where even the daemon can't read the private half. `signInRequests:open`, which takes no
+machine, stays for the Jive app and for jive 0.12 and older.
+
+**Built:** with phone approval enabled, step 3 can happen on the person's phone instead. The request is pushed to
+the Jive app, with a notification naming the programs, the machine, its trust and the address. Approving it there with
+the passkey grants the program its session
 ([approvalDevices.ts](https://github.com/jive-sh/server/blob/371b2dadf7ba5898fe86bb914c490075f4589bd3/convex/approvalDevices.ts#L9-L21)).
 Not yet tested on a real phone.
 

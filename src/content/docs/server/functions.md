@@ -17,7 +17,7 @@ All links are to `jive-sh/server` at
 | `auth:registrationOptions`, `auth:register` | Creates an account and its passkey, and opens its first session. Makes the account's SSH key. |
 | `auth:signInOptions`, `auth:signIn` | Signs a person in with a passkey; can also approve a program's sign-in request |
 | `auth:addPasskeyOptions`, `auth:addPasskey` | Adds another passkey to the account |
-| `signInRequests:open`, `describe`, `claim` | Signs a program in ([Sessions](/server/sessions/)) |
+| `signInRequests:open`, `describe`, `claim`, `addCaller`, and `POST /sign-in-requests` | Signs a program in; a machine's request is signed with the machine's key ([Sessions](/server/sessions/)) |
 | `pipelineSessions:signIn` | Signs a deploy job in with its GitHub ID token |
 | `sessions:signOut` | Revokes the session |
 | `accounts:me` | The signed-in account and its passkeys |
