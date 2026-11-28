@@ -29,9 +29,18 @@ on its socket, so programs asking at the same time share one request and the per
    The server records the address the request came from.
    - When a request is already waiting, the program is added to it instead (`signInRequests:addCaller`).
 3. The person opens `https://jive.sh/login?request=<id>` and signs in with their passkey. There is no code to compare.
-   - The page shows the programs, the machine's name, whether the account trusts the machine, and the address.
-   - **Trust this machine** names the machine and marks it trusted. Trust is only a label: every sign-in still needs
-     the passkey.
+   - The page and the phone show the programs, the machine's nickname, its key name, whether the account trusts it,
+     roughly where the request came from, and the address.
+   - **Trust this machine** marks the machine trusted under a nickname, which starts as its OS name. Trust is only a
+     label: every sign-in still needs the passkey. Its job is to make a fake machine stand out, so a trusted machine
+     shows ✓ and an untrusted one ⚠, in words as well as color, and the phone titles an untrusted machine's request
+     "⚠ Sign in from an untrusted machine?".
+   - The **key name** is three words from the SHA-256 of the machine's public key, so a machine copying a trusted
+     machine's nickname still shows another key name. Trust follows the whole key.
+   - The **location** comes from the server looking the address up at [ipinfo.is](https://ipinfo.is/), whose privacy
+     policy says "Lookup queries are not stored or logged". Only the address is sent, private addresses are skipped,
+     and only the city, region, country and coordinates to a tenth of a degree are kept
+     ([ipLocation.ts](https://github.com/jive-sh/server/blob/37139d3d218fc6b8ed68ebe5177355e57ac1ed35/convex/model/ipLocation.ts#L1-L12)).
 4. The daemon calls `signInRequests:claim`, signing each claim with the machine's key, until it answers with the
    machine's own session token ([machineKeys.ts](https://github.com/jive-sh/server/blob/5f587db973bbda948148b03f0f11ae73dc5eb1cc/convex/model/machineKeys.ts#L1-L33)). Someone holding only
    the claim secret gets nothing.
